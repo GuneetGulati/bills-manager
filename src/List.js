@@ -54,7 +54,7 @@ function List({data}) {
 
   useEffect(() => {
     const localdata = localStorage.getItem("bill-list");
-    if (localdata && JSON.parse(localdata)!==[] ) {
+    if (localdata) {
    
       dispatch(setData({ updatedarr: JSON.parse(localdata) }));
       setArr(JSON.parse(localdata));

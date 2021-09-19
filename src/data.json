@@ -25,7 +25,7 @@
     "id": 4,
     "description": "House rent",
     "category": "Food & Dining",
-    "amount": "35900",
+    "amount": "900",
     "date": "01-03-2020"
     },
     {
@@ -40,13 +40,13 @@
     "description": "Laundry",
     "category": "Personal Care",
     "amount": "320",
-    "date": "01-14-2020"
+    "date": "01-08-2020"
     },
     {
     "id": 7,
     "description": "Vacation",
     "category": "Travel",
-    "amount": "3430",
-    "date": "01-18-2020"
+    "amount": "3450",
+    "date": "01-09-2020"
     }
 ]

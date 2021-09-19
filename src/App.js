@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useSelector , useDispatch} from "react-redux";
 import { selectCategory , setData, selectData } from "./features/data/dataSlice";
 import data from "./data.json";
+import Chart from "./Chart"
 
 function App() {
 
@@ -36,8 +37,9 @@ function App() {
           </Route>
 
           <Route path="/" strict>
-            {/* {localStorage.removeItem("bill-list")} */}
+            
             <CategoryList data ={data} />
+            <Chart/>
             <List data ={data}/>
           </Route>
         </Switch>
