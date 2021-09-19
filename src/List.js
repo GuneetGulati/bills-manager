@@ -1,12 +1,12 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import data from "./data.json";
+//import data from "./data.json"
 import { Modal } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { setData, selectData } from "./features/data/dataSlice";
+import { setData, selectData, selectCategory } from "./features/data/dataSlice";
 
 function getModalStyle() {
   const top = 30;
@@ -33,7 +33,7 @@ const useStyl = makeStyles((theme) => ({
   },
 }));
 
-function List() {
+function List({data}) {
   const classes = useStyl();
   const [modalStyle] = useState(getModalStyle);
 
@@ -50,18 +50,28 @@ function List() {
 
   const dispatch = useDispatch();
   const updatedarr = useSelector(selectData);
+  const categorystatus = useSelector(selectCategory);
 
   useEffect(() => {
     const localdata = localStorage.getItem("bill-list");
-    if (localdata) {
+    if (localdata && JSON.parse(localdata)!==[] ) {
+   
       dispatch(setData({ updatedarr: JSON.parse(localdata) }));
       setArr(JSON.parse(localdata));
+
     }
+  
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("bill-list", JSON.stringify(arr));
-  }, [arr]);
+    
+    if(categorystatus==null) { localStorage.setItem("bill-list", JSON.stringify(arr))}
+    else{
+      console.log("cccc",data)
+      localStorage.setItem("bill-list", JSON.stringify(data))
+      window.location.reload();
+    }
+  }, [arr,data]);
 
 
 
@@ -73,13 +83,18 @@ function List() {
 
   }
 
+  function convertDate(dateString){
+    var p = dateString.split("-")
+    return [p[2],p[1],p[0] ].join("-")
+    }
+
   function addData(event, id) {
     var obj = {
         id: id,
         description: description,
         category: category,
         amount: amount,
-        date: date,
+        date: convertDate(date),
     };
 
     setArr([obj, ...arr]);
@@ -91,12 +106,12 @@ function List() {
     setSaveid(id);
     let obj = {};
 
-    arr.map((e) => e.id == id && (obj = e));
+    arr?.map((e) => e.id == id && (obj = e));
 
     setDescription(obj.description);
     setCategory(obj.category);
     setAmount(obj.amount);
-    setDate(obj.date);
+    setDate(convertDate(obj.date));
 
     setOpenEdit(true);
   }
@@ -116,7 +131,7 @@ function List() {
       description: description,
       category: category,
       amount: amount,
-      date: date,
+      date: convertDate(date),
     };
 
     const elementsIndex = arr.findIndex((element) => element.id == saveid);
@@ -243,9 +258,9 @@ function List() {
         </div>
       </Modal>
 
-      {arr.map((res) => {
+      {arr?.map((res) => {
         return (
-          <div id={res.id}>
+          <div key={res.id}>
             <h1>{res.description}</h1>
             <h3>{res.category}</h3>
             <h3>Amount: {res.amount}</h3>
