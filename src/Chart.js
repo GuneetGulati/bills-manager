@@ -15,8 +15,7 @@ const Chart = () => {
         for(var i=0;i<data.length;i++)
         {
             var index = data[i].date.split("-")
-            console.log(parseInt(index[1]));
-            arr[parseInt(index[1])-1] += data[i].amount;
+            arr[parseInt(index[1])-1] += parseInt(data[i].amount);
         }
         
         setAmounts(arr);
@@ -44,7 +43,7 @@ return (
            
           ],
         }}
-        height={400}
+        height={300}
         width={600}
         options={{
           maintainAspectRatio: false,

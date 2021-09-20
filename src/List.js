@@ -1,4 +1,4 @@
-import "./App.css";
+import "./List.css";
 import React, { useState, useEffect } from "react";
 //import data from "./data.json"
 import { Modal } from "@material-ui/core";
@@ -33,12 +33,14 @@ const useStyl = makeStyles((theme) => ({
   },
 }));
 
-function List({data}) {
+
+
+function List({ data }) {
   const classes = useStyl();
   const [modalStyle] = useState(getModalStyle);
 
   const [open, setOpen] = useState(false);
-  const [budget, setBudget] = useState();
+  const [budget, setBudget] = useState(5000);
   const [arr, setArr] = useState(data);
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -48,60 +50,103 @@ function List({data}) {
   const [date, setDate] = useState();
   const [saveid, setSaveid] = useState();
 
+  const [inputval, setInputval] = useState();
+  const [val, setVal] = useState();
+
   const dispatch = useDispatch();
   const updatedarr = useSelector(selectData);
   const categorystatus = useSelector(selectCategory);
 
+  // *************************************************************
   useEffect(() => {
     const localdata = localStorage.getItem("bill-list");
     if (localdata) {
-   
       dispatch(setData({ updatedarr: JSON.parse(localdata) }));
       setArr(JSON.parse(localdata));
 
+      let x = JSON.parse(localdata);
+      
+      toBePaid(x);
+
     }
-  
+    
+    
   }, []);
 
   useEffect(() => {
-    
-    if(categorystatus==null) { localStorage.setItem("bill-list", JSON.stringify(arr))}
-    else{
-      console.log("cccc",data)
-      localStorage.setItem("bill-list", JSON.stringify(data))
+    if (categorystatus == null) {
+      localStorage.setItem("bill-list", JSON.stringify(arr));
+    } else {
+      console.log("cccc", data);
+      localStorage.setItem("bill-list", JSON.stringify(data));
       window.location.reload();
+
+      toBePaid(arr);
     }
-  }, [arr,data]);
 
-
-
+      
+    
+  }, [arr, data]);
+//**************************************************************
   function removeData(id) {
     const newArr = arr.filter((res) => res.id !== id);
     setArr(newArr);
-
+    toBePaid(newArr);
     dispatch(setData({ updatedarr: newArr }));
-
   }
 
-  function convertDate(dateString){
-    var p = dateString.split("-")
-    return [p[2],p[1],p[0] ].join("-")
+  // *************************************************************
+  
+  let set = new Set();
+
+  function toBePaid(x) {
+    
+    
+    let map = new Map();
+    var yourBudget = budget;
+    set.clear();
+    map.clear();
+    
+    for (let i = 0; i < x.length; i++) {
+      map.set(x[i].id, parseInt(x[i].amount));
     }
 
+    const mapSort = new Map([...map.entries()].sort((a, b) => b[1] - a[1]));
+
+    for (let [key, value] of mapSort) {
+      if (yourBudget < value) {
+        continue;
+      } else if (yourBudget - value > 0) {
+        yourBudget -= value;
+        set.add(key);
+      }
+    }
+
+    setVal(set);
+
+    console.log(set);
+  }
+  //**************************************************************
+  function convertDate(dateString) {
+    var p = dateString.split("-");
+    return [p[2], p[1], p[0]].join("-");
+  }
+  // *************************************************************
   function addData(event, id) {
     var obj = {
-        id: id,
-        description: description,
-        category: category,
-        amount: amount,
-        date: convertDate(date),
+      id: id,
+      description: description,
+      category: category,
+      amount: amount,
+      date: convertDate(date),
     };
 
     setArr([obj, ...arr]);
+    toBePaid(arr);
     dispatch(setData({ updatedarr: arr }));
     setOpen(false);
   }
-
+  // *************************************************************
   function openEditData(e, id) {
     setSaveid(id);
     let obj = {};
@@ -112,10 +157,10 @@ function List({data}) {
     setCategory(obj.category);
     setAmount(obj.amount);
     setDate(convertDate(obj.date));
-
+    
     setOpenEdit(true);
   }
-
+  // *************************************************************
   function OpenAddmodel(e) {
     setDescription("");
     setCategory("");
@@ -123,9 +168,8 @@ function List({data}) {
     setDate();
     setOpen(true);
   }
-
+  // *************************************************************
   function submitEdit(e) {
-    
     let ex = {
       id: saveid,
       description: description,
@@ -142,19 +186,33 @@ function List({data}) {
     setArr(newArray);
     dispatch(setData({ updatedarr: newArray }));
     setOpenEdit(false);
+    toBePaid(newArray);
   }
 
+  // *************************************************************
+
+  const handleBudget = (e) => {
+    e.preventDefault();
+    setBudget(inputval);
+    console.log(inputval);
+  };
+
   return (
-    <div className="App">
-      <input
-        type="number"
-        placeholder="enter budget"
-        onChange={(e) => setBudget(e.target.value)}
-        value={budget}
-      />
+    <div className="List">
+      <form>
+        <input
+          type="number"
+          placeholder="enter budget"
+          onChange={(e) => setInputval(e.target.value)}
+          value={inputval}
+        />
+        <button onClick={(e) => handleBudget(e)}>ADD BUDGET</button>
+      </form>
       <h3>Your Budget: {budget} </h3>
 
-      <button onClick={(e) => OpenAddmodel(e, Math.floor(Math.random() * 1000 + 1))}>
+      <button
+        onClick={(e) => OpenAddmodel(e, Math.floor(Math.random() * 1000 + 1))}
+      >
         Add
       </button>
 
@@ -257,17 +315,18 @@ function List({data}) {
           </form>
         </div>
       </Modal>
-
+      {console.log("dd" , val)};
       {arr?.map((res) => {
         return (
-          <div key={res.id}>
+          <div key={res.id} className={"highlight" + (val?.has(res.id) ? 'show' : 'hidden')}>
+            {console.log("ssss",val?.has(res.id))}
             <h1>{res.description}</h1>
             <h3>{res.category}</h3>
             <h3>Amount: {res.amount}</h3>
             <h3>Due Date: {res.date}</h3>
             <button onClick={() => removeData(res.id)}>Remove</button>
             <button onClick={(e) => openEditData(e, res.id)}>Edit</button>
-
+              
             <hr />
           </div>
         );
