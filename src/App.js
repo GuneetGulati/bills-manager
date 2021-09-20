@@ -6,6 +6,8 @@ import { useSelector , useDispatch} from "react-redux";
 import { selectCategory , setData, selectData } from "./features/data/dataSlice";
 import data from "./data.json";
 import Chart from "./Chart"
+import "./App.css"
+import Card from "./Card";
 
 function App() {
 
@@ -24,9 +26,9 @@ function App() {
 
   return (
     <Router>
-      <div>
+      <div className="App">
 
-        <Switch>
+        <Switch className="align">
 
           <Route path={`/category/${category?.category}` }>
            
@@ -40,6 +42,7 @@ function App() {
             
             <CategoryList data ={data} />
             <Chart/>
+            
             <List data ={data}/>
           </Route>
         </Switch>

@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { setData, selectData, selectCategory } from "./features/data/dataSlice";
-
+import Card from "./Card";
 function getModalStyle() {
   const top = 30;
   const left = 50;
@@ -23,7 +23,7 @@ const useStyl = makeStyles((theme) => ({
   paper: {
     position: "absolute",
     width: 400,
-    height: 378,
+    height: 350,
     backgroundColor: theme.palette.background.paper,
     border: "1px solid lightgray",
     borderRadius: "10px",
@@ -220,10 +220,11 @@ function List({ data }) {
         <div style={modalStyle} className={classes.paper}>
           <form className="app_login">
             <center className="ds">
-              <h3>Add data</h3>
+              <h5 className="space">Add data</h5>
             </center>
 
             <Form.Control
+            className="space"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -231,6 +232,7 @@ function List({ data }) {
             />
 
             <Form.Control
+            className="space"
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -238,6 +240,7 @@ function List({ data }) {
             />
 
             <Form.Control
+            className="space"
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
@@ -245,14 +248,16 @@ function List({ data }) {
             />
 
             <Form.Control
+            className="space"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               placeholder="Date"
             />
 
-            <center className="ds">
+            <center className="ds space">
               <Button
+              
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -270,7 +275,7 @@ function List({ data }) {
         <div style={modalStyle} className={classes.paper}>
           <form className="app_login">
             <center className="ds">
-              <h3>Edit data</h3>
+              <h5>Edit data</h5>
             </center>
 
             <Form.Control
@@ -315,22 +320,16 @@ function List({ data }) {
           </form>
         </div>
       </Modal>
-      {console.log("dd" , val)};
+      <div className="elem">
       {arr?.map((res) => {
         return (
-          <div key={res.id} className={"highlight" + (val?.has(res.id) ? 'show' : 'hidden')}>
-            {console.log("ssss",val?.has(res.id))}
-            <h1>{res.description}</h1>
-            <h3>{res.category}</h3>
-            <h3>Amount: {res.amount}</h3>
-            <h3>Due Date: {res.date}</h3>
-            <button onClick={() => removeData(res.id)}>Remove</button>
-            <button onClick={(e) => openEditData(e, res.id)}>Edit</button>
-              
-            <hr />
+          <div key={res.id} className={"highlight" + (val?.has(res.id) ? 'show elemin' : 'hidden elemin')}>
+            <Card description={res.description} category={res.category} amount={res.amount} date={res.date} id = {res.id} remove={removeData} openEdit={openEditData}/>
+            
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

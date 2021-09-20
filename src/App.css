@@ -1,5 +1,9 @@
 .App {
   text-align: center;
   font-family: sans-serif;
+  background-color: #F5F5F5;
 }
 
+.space{
+  margin-top: 20px;
+}

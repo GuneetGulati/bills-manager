@@ -1,8 +1,15 @@
-.List {
-    text-align: center;
-    font-family: sans-serif;
-  }
-  
+
   .highlightshow{
-      background-color: darksalmon;
+      border: 2px solid grey;
+  }
+
+  .elem{
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .elemin{
+      
+    margin: 43px;
+
   }
